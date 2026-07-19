@@ -4,7 +4,7 @@
 int main()
 {
   vMemoryWriteWord(0x1000, 0x1234);
-  printf("%d\n", u16MemoryReadWord(0x1000));
+  printf("0x%04X\n", u16MemoryReadWord(0x1000));
 
   return 0;
 }

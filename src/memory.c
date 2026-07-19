@@ -19,6 +19,6 @@ uint16_t u16MemoryReadWord(uint16_t u16Address)
 
 void vMemoryWriteWord(uint16_t u16Address, uint16_t u16Value)
 {
-  au8Memory[u16Address] = u16Value;
-  // au8Memory[u16Address + 1] = u16Value >> 8;
+  au8Memory[u16Address] = (uint8_t)(u16Value & 0xFF);
+  au8Memory[u16Address + 1] = (uint8_t)((u16Value >> 8) & 0xFF);
 }
