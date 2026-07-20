@@ -28,7 +28,10 @@ INTEL_EXEC = intel_emu
 OBJS = \
 	$(OBJ_DIR)/cpu.o \
 	$(OBJ_DIR)/main.o \
-	$(OBJ_DIR)/memory.o
+	$(OBJ_DIR)/memory.o \
+	$(OBJ_DIR)/flags.o \
+	$(OBJ_DIR)/utils.o \
+	$(OBJ_DIR)/machine.o
 
 all: clean directories $(BIN_DIR)/$(INTEL_EXEC)
 

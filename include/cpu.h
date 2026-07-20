@@ -1,10 +1,10 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include <inttypes.h>
+#include <stdint.h>
 #include "bool.h"
 
-typedef struct Cpu8080 {
+typedef struct STRUCT_CPU {
   uint8_t u8A;
 
   uint8_t u8B;
@@ -25,6 +25,9 @@ typedef struct Cpu8080 {
 
   BOOL bInterruptEnabled;
   BOOL bHalted;
-} Cpu8080;
+} STRUCT_CPU, *PSTRUCT_CPU;
+
+PSTRUCT_CPU pstCPUInit(void);
+void vFreeCPU();
 
 #endif
