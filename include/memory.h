@@ -12,6 +12,7 @@ uint16_t u16MemoryReadWord(uint16_t u16Address);
 void     vMemoryWriteWord(uint16_t u16Address, uint16_t u16Value);
 
 uint8_t *pau8InitMemory(void);
+
 void vMemoryClear(void);
 void vFreeMemory(void);
 

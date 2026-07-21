@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include "bool.h"
 
+#define g_CPU g_pstMachine->pstCPU
+
 typedef struct STRUCT_CPU {
   uint8_t u8A;
 
@@ -28,6 +30,9 @@ typedef struct STRUCT_CPU {
 } STRUCT_CPU, *PSTRUCT_CPU;
 
 PSTRUCT_CPU pstCPUInit(void);
+uint8_t *pu8GetCPUReg(PSTRUCT_CPU pstCPU, uint8_t u8RegId);
 void vFreeCPU();
+
+int iCPUStep();
 
 #endif

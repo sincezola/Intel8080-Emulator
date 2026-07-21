@@ -5,11 +5,11 @@ PSTRUCT_MACHINE g_pstMachine = ((void *)0x00);
 
 int iInitMachine(void)
 {
-  g_pstMachine             = (PSTRUCT_MACHINE)calloc(1, sizeof(STRUCT_MACHINE));
+  g_pstMachine = (PSTRUCT_MACHINE)calloc(1, sizeof(STRUCT_MACHINE));
 
   if (!g_pstMachine) return 1;
 
-  g_pstMachine->pstCPU     = pstCPUInit();
+  g_pstMachine->pstCPU = pstCPUInit();
 
   if (!g_pstMachine->pstCPU) return 1;
 
