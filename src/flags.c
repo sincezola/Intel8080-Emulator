@@ -1,21 +1,29 @@
 #include "flags.h"
 #include "machine.h"
 
-void vEnsureFRegCorrectFormat(PSTRUCT_CPU pstCPU) {
-  pstCPU->u8F &= 0xD7;
-  pstCPU->u8F |= 0x02;
+#define FLAGS_REG pstCPU->u8F
+
+void vEnsureFRegCorrectFormat(PSTRUCT_CPU pstCPU)
+{
+  FLAGS_REG &= 0xD7;
+  FLAGS_REG |= 0x02;
 }
 
-void vCPUSetFlag(E_CPU_Flags eCpuFlag)
+bool bCPUGetFlag(PSTRUCT_CPU pstCPU, E_CPU_Flags eCpuFlag)
 {
-  g_pstMachine->pstCPU->u8F |= eCpuFlag;
-
-  vEnsureFRegCorrectFormat(g_pstMachine->pstCPU);
+  return (FLAGS_REG & eCpuFlag) != 0;
 }
 
-void vCPUResetFlag(E_CPU_Flags eCpuFlag)
+void vCPUSetFlag(PSTRUCT_CPU pstCPU, E_CPU_Flags eCpuFlag)
 {
-  g_pstMachine->pstCPU->u8F &= ~eCpuFlag;
+  FLAGS_REG |= eCpuFlag;
 
-  vEnsureFRegCorrectFormat(g_pstMachine->pstCPU);
+  vEnsureFRegCorrectFormat(pstCPU);
+}
+
+void vCPUResetFlag(PSTRUCT_CPU pstCPU, E_CPU_Flags eCpuFlag)
+{
+  FLAGS_REG &= ~eCpuFlag;
+
+  vEnsureFRegCorrectFormat(pstCPU);
 }

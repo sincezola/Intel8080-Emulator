@@ -3,5 +3,6 @@
   #include "cpu.h"
 
   void vInstrNOP(PSTRUCT_CPU pstCPU);
-  void vInstrMOV(PSTRUCT_CPU, uint8_t *pu8rDst, uint8_t *pu8rSrc);
+  void vInstrMOV(PSTRUCT_CPU pstCPU, uint8_t *pu8rDst, uint8_t *pu8rSrc);
+  void vInstrADD(PSTRUCT_CPU pstCPU, uint8_t *pu8value, bool bUseCarry);
 #endif

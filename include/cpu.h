@@ -6,6 +6,12 @@
 
 #define g_CPU g_pstMachine->pstCPU
 
+#define CHECK_CPU \
+  do {             \
+    if (!pstCPU)    \
+      return;        \
+  } while (0x00);     \
+
 typedef struct STRUCT_CPU {
   uint8_t u8A;
 
@@ -25,8 +31,8 @@ typedef struct STRUCT_CPU {
 
   uint64_t u64Cycles;
 
-  BOOL bInterruptEnabled;
-  BOOL bHalted;
+  bool bInterruptEnabled;
+  bool bHalted;
 } STRUCT_CPU, *PSTRUCT_CPU;
 
 PSTRUCT_CPU pstCPUInit(void);

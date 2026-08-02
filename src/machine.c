@@ -9,9 +9,9 @@ int iInitMachine(void)
 
   if (!g_pstMachine) return 1;
 
-  g_pstMachine->pstCPU = pstCPUInit();
+  g_CPU = pstCPUInit();
 
-  if (!g_pstMachine->pstCPU) return 1;
+  if (!g_CPU) return 1;
 
   g_pstMachine->pau8Memory = pau8InitMemory();
 

@@ -28,7 +28,7 @@ int iCPUStep()
 
   // if high nibble starts with 01 then its part of MOV family (one exception handled)
   if ((u8Opcode & 0xC0) == 0x40) {
-    if (u8Opcode == 0x76)
+    if (u8Opcode == 0x76) // exception
     {
       // HLT
     } else {
@@ -37,6 +37,22 @@ int iCPUStep()
                 pu8GetCPUReg(g_CPU, u8Opcode & 0x07));
     }
   }
+
+  /* if high nibble starts with 1 then its part of ADD family (ADD or ADC)
+     but uses the same function (only add but passes a flag) */
+  else if (u8Opcode & 0x80) {
+    if (!(u8Opcode & 0x08))
+    {
+      // ADD Family
+      vInstrADD(g_CPU, pu8GetCPUReg(g_CPU, u8Opcode & 0x07), FALSE);
+    }
+
+    else
+    {
+      vInstrADD(g_CPU, pu8GetCPUReg(g_CPU, u8Opcode & 0x07), TRUE);
+    }
+  }
+
   return 0;
 }
 

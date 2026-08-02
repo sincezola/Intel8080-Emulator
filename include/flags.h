@@ -15,8 +15,9 @@ typedef enum E_CPU_Flags {
   FLAG_S  = 0x80,
 } E_CPU_Flags;
 
-void vCPUSetFlag(E_CPU_Flags eCpuFlag);
-void vCPUResetFlag(E_CPU_Flags eCpuFlag);
+bool bCPUGetFlag(PSTRUCT_CPU pstCPU, E_CPU_Flags eCpuFlag);
+void vCPUSetFlag(PSTRUCT_CPU pstCPU, E_CPU_Flags eCpuFlag);
+void vCPUResetFlag(PSTRUCT_CPU pstCPU, E_CPU_Flags eCpuFlag);
 void vEnsureFRegCorrectFormat(PSTRUCT_CPU pstCPU);
 
 #endif
