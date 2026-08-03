@@ -25,15 +25,15 @@ endif
 
 INTEL_EXEC = intel_emu
 
-OBJS = \
-	$(OBJ_DIR)/cpu.o \
-	$(OBJ_DIR)/main.o \
-	$(OBJ_DIR)/memory.o \
-	$(OBJ_DIR)/flags.o \
-	$(OBJ_DIR)/utils.o \
-	$(OBJ_DIR)/machine.o \
+OBJS = 							 \
+	$(OBJ_DIR)/cpu.o    \
+	$(OBJ_DIR)/main.o    \
+	$(OBJ_DIR)/memory.o   \
+	$(OBJ_DIR)/flags.o     \
+	$(OBJ_DIR)/utils.o 		  \
+	$(OBJ_DIR)/machine.o     \
 	$(OBJ_DIR)/instructions.o \
-	$(OBJ_DIR)/trace.o \
+	$(OBJ_DIR)/trace.o 				 \
 	$(OBJ_DIR)/sys_interface.o
 
 all: clean directories $(BIN_DIR)/$(INTEL_EXEC)

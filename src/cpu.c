@@ -27,7 +27,8 @@ int iCPUStep()
   vTraceVarArgsFn("Current opcode: 0x%2X", u8Opcode);
 
   // if high nibble starts with 01 then its part of MOV family (one exception handled)
-  if ((u8Opcode & 0xC0) == 0x40) {
+  if ((u8Opcode & 0xC0) == 0x40)
+  {
     if (u8Opcode == 0x76) // exception
     {
       // HLT
@@ -39,18 +40,19 @@ int iCPUStep()
   }
 
   /* if high nibble starts with 1 then its part of ADD family (ADD or ADC)
-     but uses the same function (only add but passes a flag) */
-  else if (u8Opcode & 0x80) {
-    if (!(u8Opcode & 0x08))
-    {
-      // ADD Family
-      vInstrADD(g_CPU, pu8GetCPUReg(g_CPU, u8Opcode & 0x07), FALSE);
-    }
+     but uses the same function (only vInstrADD but passes a flag) */
+  else if (u8Opcode & 0x80)
+  {
+    u8Opcode & 0x08
+        ? vInstrADD(g_CPU, pu8GetCPUReg(g_CPU, u8Opcode & 0x07), TRUE)
+        : vInstrADD(g_CPU, pu8GetCPUReg(g_CPU, u8Opcode & 0x07), FALSE);
+  }
 
-    else
-    {
-      vInstrADD(g_CPU, pu8GetCPUReg(g_CPU, u8Opcode & 0x07), TRUE);
-    }
+  else if (u8Opcode & 0x90)
+  {
+    (u8Opcode & 0x0F) <= 7
+        ? vInstrSUB(g_CPU, pu8GetCPUReg(g_CPU, u8Opcode & 0x07), FALSE)
+        : vInstrSUB(g_CPU, pu8GetCPUReg(g_CPU, u8Opcode & 0x07), TRUE);
   }
 
   return 0;

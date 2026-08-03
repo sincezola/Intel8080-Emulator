@@ -10,7 +10,7 @@
   do {             \
     if (!pstCPU)    \
       return;        \
-  } while (0x00);     \
+  } while (0x00)      \
 
 typedef struct STRUCT_CPU {
   uint8_t u8A;

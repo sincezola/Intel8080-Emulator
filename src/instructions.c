@@ -35,7 +35,7 @@ static void vIncrPC(PSTRUCT_CPU pstCPU);
 
 static void vIncrPC(PSTRUCT_CPU pstCPU)
 {
-  CHECK_CPU
+  CHECK_CPU;
 
   pstCPU->u16PC += au8InstructionSize[u8MemoryReadByte(pstCPU->u16PC)];
 }
@@ -43,7 +43,7 @@ static void vIncrPC(PSTRUCT_CPU pstCPU)
 // Does nothing
 void vInstrNOP(PSTRUCT_CPU pstCPU)
 {
-  CHECK_CPU
+  CHECK_CPU;
 
   vIncrPC(pstCPU);
 }
@@ -51,7 +51,7 @@ void vInstrNOP(PSTRUCT_CPU pstCPU)
 // Movs pu8rSrc to pu8rDst
 void vInstrMOV(PSTRUCT_CPU pstCPU, uint8_t *pu8rDst, uint8_t *pu8rSrc)
 {
-  CHECK_CPU
+  CHECK_CPU;
 
   CHECK_POINTER_AND_INCR(pu8rDst, pstCPU);
   CHECK_POINTER_AND_INCR(pu8rSrc, pstCPU);
@@ -61,23 +61,62 @@ void vInstrMOV(PSTRUCT_CPU pstCPU, uint8_t *pu8rDst, uint8_t *pu8rSrc)
   vIncrPC(pstCPU);
 }
 
-// Adds pu8value to Accumulator (u8a)
-void vInstrADD(PSTRUCT_CPU pstCPU, uint8_t *pu8value, bool bUseCarry)
-{
+// Adds pu8value to Accumulator (u8A)
+void vInstrADD(PSTRUCT_CPU pstCPU, uint8_t *pu8value, bool bUseCarry) {
   uint16_t u16Temp = 0x0000;
+  uint8_t u8A      = 0x00;
+  uint8_t u8Value  = 0x00;
+  bool bCarry      = FALSE;
 
-  CHECK_CPU
+  CHECK_CPU;
   CHECK_POINTER_AND_INCR(pu8value, pstCPU);
 
-  u16Temp = pstCPU->u8A + *pu8value;
+  u8A = pstCPU->u8A;
+  u8Value = *pu8value;
 
-  if (bUseCarry)
-    u16Temp += bCPUGetFlag(pstCPU, FLAG_CY);
+  bCarry = bUseCarry && bCPUGetFlag(pstCPU, FLAG_CY);
+
+  u16Temp = u8A + u8Value + bCarry;
 
   pstCPU->u8A = (uint8_t)u16Temp;
 
-  if (u16Temp > 0xFF)
-    vCPUSetFlag(pstCPU, FLAG_CY);
+  vSetFlagsByValue(pstCPU, pstCPU->u8A);
+
+  u16Temp > 0xFF ? vCPUSetFlag(pstCPU, FLAG_CY, TRUE)
+                 : vCPUResetFlag(pstCPU, FLAG_CY, TRUE);
+
+  if (((u8A & 0x0F) + (u8Value & 0x0F) + bCarry) > 0x0F)
+    vCPUSetFlag(pstCPU, FLAG_AC, TRUE);
   else
-    vCPUResetFlag(pstCPU, FLAG_CY);
+    vCPUResetFlag(pstCPU, FLAG_AC, TRUE);
+}
+
+// Subtracts pu8value to Accumulator (u8A)
+void vInstrSUB(PSTRUCT_CPU pstCPU, uint8_t *pu8value, bool bUseBorrow) {
+  uint16_t u16Temp = 0x0000;
+  uint8_t u8A      = 0x00;
+  uint8_t u8Value  = 0x00;
+  bool bBorrow     = FALSE;
+
+  CHECK_CPU;
+  CHECK_POINTER_AND_INCR(pu8value, pstCPU);
+
+  u8A = pstCPU->u8A;
+  u8Value = *pu8value;
+
+  bBorrow = bUseBorrow && bCPUGetFlag(pstCPU, FLAG_CY);
+
+  u16Temp = u8A - u8Value - bBorrow;
+
+  pstCPU->u8A = (uint8_t)u16Temp;
+
+  vSetFlagsByValue(pstCPU, pstCPU->u8A);
+
+  u16Temp > 0xFF ? vCPUSetFlag(pstCPU, FLAG_CY, TRUE)
+                 : vCPUResetFlag(pstCPU, FLAG_CY, TRUE);
+
+  if ((u8A & 0x0F) < ((u8Value & 0x0F) + bBorrow))
+    vCPUSetFlag(pstCPU, FLAG_AC, TRUE);
+  else
+    vCPUResetFlag(pstCPU, FLAG_AC, TRUE);
 }
