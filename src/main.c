@@ -1,19 +1,19 @@
-#include <stdio.h>
-#include "utils.h"
-#include "memory.h"
 #include "flags.h"
 #include "machine.h"
+#include "memory.h"
 #include "trace.h"
+#include "utils.h"
+#include <stdio.h>
 
 // by that time, tests only..
-int main(void)
-{
+int main(void) {
   int iMachineState = iInitMachine();
   uint8_t *pu8RegD;
 
   vInitLogs("./log/intel_logs", "trace");
 
-  if (iMachineState) return 1;
+  if (iMachineState)
+    return 1;
   // tests ->>
   vMemoryWriteByte(0x00, 0x74);
 

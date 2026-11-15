@@ -1,6 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
-  #include <stdint.h>
+#include <stdint.h>
 
-  void vPrintBitsOfByte(uint8_t u8Byte);
+void vPrintBitsOfByte(uint8_t u8Byte);
 #endif

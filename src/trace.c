@@ -7,18 +7,18 @@
  *
  */
 
+#include <stdarg.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys_interface.h>
 #include <trace.h>
-#include <stdarg.h>
 
 char gszTraceFile[2048];
 char gszTraceFileDialog[2048];
 char gszDebugLevel[32];
 char gszConfFile[_MAX_PATH];
-int  giNoNL = FALSE;
+int giNoNL = FALSE;
 int gbTraceOnTerminal = FALSE;
 
 #ifdef _WIN32
@@ -27,8 +27,9 @@ int gettimeofday(struct timeval *tp, void *tzp) {
   FILETIME ft;
   ULARGE_INTEGER li;
   unsigned __int64 t;
-  
-  if ( tzp == NULL ){}
+
+  if (tzp == NULL) {
+  }
 
   GetSystemTimeAsFileTime(&ft);
   li.LowPart = ft.dwLowDateTime;
@@ -65,17 +66,17 @@ void vTraceMsg(char *szMsg) {
            (int)st_tm_Now->tm_hour, (int)st_tm_Now->tm_min,
            (int)st_tm_Now->tm_sec, (long)tv.tv_usec / 1000);
 
-  if ((pfLog = fopen(gszTraceFile, "a+")) == NULL){
+  if ((pfLog = fopen(gszTraceFile, "a+")) == NULL) {
     return;
   }
   if (giNoNL == TRUE) {
     fprintf(pfLog, "%s", szMsg);
-    if ( gbTraceOnTerminal ) fprintf(stdout, "%s", szMsg);
-  }
-  else {
+    if (gbTraceOnTerminal)
+      fprintf(stdout, "%s", szMsg);
+  } else {
     fprintf(pfLog, "%s%s\n", szDateTimeNow_us, szMsg);
-    if ( gbTraceOnTerminal )
-    fprintf(stdout, "%s%s\n", szDateTimeNow_us, szMsg);
+    if (gbTraceOnTerminal)
+      fprintf(stdout, "%s%s\n", szDateTimeNow_us, szMsg);
   }
 
   fclose(pfLog);
@@ -85,15 +86,15 @@ void vTraceMsg(char *szMsg) {
 void _vTraceMsgDialog(char *szMsg, ...) {
   FILE *pfLog;
   va_list args;
-  if ( DEBUG_DIALOG ){
+  if (DEBUG_DIALOG) {
     va_start(args, szMsg);
-    if ((pfLog = fopen(gszTraceFileDialog, "a+")) == NULL){
+    if ((pfLog = fopen(gszTraceFileDialog, "a+")) == NULL) {
       return;
     }
 
     vfprintf(pfLog, szMsg, args);
 
-    if ( gbTraceOnTerminal ) {
+    if (gbTraceOnTerminal) {
       va_list args_terminal;
       va_start(args_terminal, szMsg);
       vfprintf(stdout, szMsg, args_terminal);
@@ -120,21 +121,21 @@ void vTracePid(char *szMsg, int iMsgLen) {
   sprintf(pszMyMsg, "%d %s", iPid, szMsg);
 
   vTraceMsg(pszMyMsg);
-  if ( gbTraceOnTerminal ) printf("%s\n", pszMyMsg);
+  if (gbTraceOnTerminal)
+    printf("%s\n", pszMyMsg);
 
   free(pszMyMsg);
   pszMyMsg = NULL;
 } /* vTracePid */
 
-
-
-void _vTraceVarArgsFn(char *pszModuleName, const int kiLine, const char *kpszFunctionName, const char *kpszFmt, ...) {
+void _vTraceVarArgsFn(char *pszModuleName, const int kiLine,
+                      const char *kpszFunctionName, const char *kpszFmt, ...) {
   va_list args;
   FILE *pfLog = NULL;
   char szPath[_MAX_PATH + _MAX_PATH + 8];
   char szName[_MAX_PATH];
   char szExt[_MAX_PATH];
-  char szFullTitle[_MAX_PATH+16];
+  char szFullTitle[_MAX_PATH + 16];
   char szDbg[2048];
   struct tm *st_tm_Now;
   struct timeval tv;
@@ -157,18 +158,19 @@ void _vTraceVarArgsFn(char *pszModuleName, const int kiLine, const char *kpszFun
 
   iDIR_SplitFilename(pszModuleName, szPath, szName, szExt);
   sprintf(szFullTitle, "<%.9s%s:%d>", szName, szExt, kiLine);
-  snprintf(szDbg, sizeof(szDbg), "[%02d/%02d/%02d %02d:%02d:%02d.%03ld]%-16.16s(%-12.12s): ",
+  snprintf(szDbg, sizeof(szDbg),
+           "[%02d/%02d/%02d %02d:%02d:%02d.%03ld]%-16.16s(%-12.12s): ",
            (int)st_tm_Now->tm_mday, (int)st_tm_Now->tm_mon + 1,
            (int)st_tm_Now->tm_year - 100, (int)st_tm_Now->tm_hour,
            (int)st_tm_Now->tm_min, (int)st_tm_Now->tm_sec,
            (long)tv.tv_usec / 1000, szFullTitle, kpszFunctionName);
 
   strcat(szDbg, kpszFmt);
-  
+
   strcat(szDbg, "\n");
   vfprintf(pfLog, szDbg, args);
 
-  if ( gbTraceOnTerminal ) {
+  if (gbTraceOnTerminal) {
     va_list args_terminal;
     va_start(args_terminal, kpszFmt);
     vfprintf(stdout, szDbg, args_terminal);
@@ -181,7 +183,6 @@ void _vTraceVarArgsFn(char *pszModuleName, const int kiLine, const char *kpszFun
   pfLog = NULL;
 } /* _vTraceVarArgsFn */
 
-
 void vSetLogFileTitle(void) {
   memset(gszTraceFile, 0, sizeof(gszTraceFile));
   sprintf(gszTraceFile, "%s.log", LOG_NAME);
@@ -189,7 +190,7 @@ void vSetLogFileTitle(void) {
   sprintf(gszTraceFileDialog, "%s_dialog.log", LOG_NAME);
 } /* vSetLogFile */
 
-void vInitLogs(char* pszTrace, const char* pszDebugLevel) {
+void vInitLogs(char *pszTrace, const char *pszDebugLevel) {
   char szPath[_MAX_PATH + 8];
   char szPath2[_MAX_PATH + 8];
   char szName[_MAX_PATH];
@@ -198,32 +199,34 @@ void vInitLogs(char* pszTrace, const char* pszDebugLevel) {
   memset(szPath, 0x00, sizeof(szPath));
   memset(szName, 0x00, sizeof(szName));
   memset(szExt, 0x00, sizeof(szExt));
-  
-  if ( bStrIsEmpty(pszTrace) ) {
+
+  if (bStrIsEmpty(pszTrace)) {
     vSetLogFileTitle();
     iDIR_SplitFilename(gszTraceFile, szPath, szName, szExt);
     snprintf(szPath, sizeof(szPath), "./log");
-    sprintf(gszTraceFile, "%s/%s%s",szPath,szName,szExt);
-  }
-  else {
+    sprintf(gszTraceFile, "%s/%s%s", szPath, szName, szExt);
+  } else {
     iDIR_SplitFilename(pszTrace, szPath, szName, szExt);
     snprintf(gszTraceFile, sizeof(gszTraceFile), "%s", pszTrace);
   }
 
-  if ( strlen(szPath) > 1 && szPath[strlen(szPath)-1] == '/')
-    szPath[strlen(szPath)-1] = 0;    
-  
-  if ( iDIR_IsDir(szPath) <= 0 ) {
-    if ( !iDIR_MkDir(szPath) ) {
-      fprintf(stderr, "E: Impossible create dir [%s]!\n"
-      "%s\n",
-      szPath, strerror(errno));
+  if (strlen(szPath) > 1 && szPath[strlen(szPath) - 1] == '/')
+    szPath[strlen(szPath) - 1] = 0;
+
+  if (iDIR_IsDir(szPath) <= 0) {
+    if (!iDIR_MkDir(szPath)) {
+      fprintf(stderr,
+              "E: Impossible create dir [%s]!\n"
+              "%s\n",
+              szPath, strerror(errno));
       exit(EXIT_FAILURE);
     }
   }
-  if ( pszDebugLevel ) snprintf(gszDebugLevel, sizeof(gszDebugLevel), "%s", pszDebugLevel);
+  if (pszDebugLevel)
+    snprintf(gszDebugLevel, sizeof(gszDebugLevel), "%s", pszDebugLevel);
 
   iDIR_SplitFilename(gszTraceFileDialog, szPath2, szName, szExt);
-  sprintf(gszTraceFileDialog, "%s/%s%s",szPath,szName,szExt);
-  if ( DEBUG_MORE_MSGS ) vTraceVarArgsFn("Load OK=[%s]", gszTraceFile);
+  sprintf(gszTraceFileDialog, "%s/%s%s", szPath, szName, szExt);
+  if (DEBUG_MORE_MSGS)
+    vTraceVarArgsFn("Load OK=[%s]", gszTraceFile);
 } /* vInitLogs */

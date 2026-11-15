@@ -3,15 +3,15 @@
 #include <sys_interface.h>
 
 #ifdef _WIN32
-  #include <stdint.h> /** Para intptr_t */
-  #include <stdlib.h>
+#include <stdint.h> /** Para intptr_t */
+#include <stdlib.h>
 #else
-  #include <libgen.h>
-  #include <signal.h>
-  #include <sys/types.h>
-  #include <sys/wait.h>
-  #include <sys/stat.h>
-  #include <unistd.h>
+#include <libgen.h>
+#include <signal.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #endif
 
 #ifdef _WIN32
@@ -25,11 +25,11 @@ DWORD WINAPI ThreadWrapper(LPVOID pArg) {
   return 0;
 }
 
-  /** Wrapper para SetConsoleCtrlHandler */
-  static int WINAPI CtrlHandler(DWORD dwCtrlType) {
-    (void)dwCtrlType;
-    return TRUE;
-  }
+/** Wrapper para SetConsoleCtrlHandler */
+static int WINAPI CtrlHandler(DWORD dwCtrlType) {
+  (void)dwCtrlType;
+  return TRUE;
+}
 #endif
 
 void vSendSig2Process(int iPID, int iSigType) {
@@ -60,39 +60,36 @@ void vSetSigUsrHandler(void (*vActCallBack)(int)) {
 }
 
 void vWaitChild() {
-#ifdef _WIN32
-  vSleepSeconds(100);
-#else
+#ifdef LINUX
   wait(NULL);
 #endif
 }
 #ifdef _WIN32
-  int iDIR_MkDir(char *szDir) { 
-    return CreateDirectory(szDir, NULL); 
-  }
-  int iDIR_SplitFilename(char *szFilename, char *szPath, char *szName, char *szExt) {
-    char szDrive[_MAX_DRIVE];
-    char szDir[_MAX_DIR];
-    _splitpath(szFilename, szDrive, szDir, szName, szExt);
-    strcpy(szPath, szDrive);
-    strcat(szPath, szDir);
-    return 0;
-  }
+int iDIR_MkDir(char *szDir) { return CreateDirectory(szDir, NULL); }
+int iDIR_SplitFilename(char *szFilename, char *szPath, char *szName,
+                       char *szExt) {
+  char szDrive[_MAX_DRIVE];
+  char szDir[_MAX_DIR];
+  _splitpath(szFilename, szDrive, szDir, szName, szExt);
+  strcpy(szPath, szDrive);
+  strcat(szPath, szDir);
+  return 0;
+}
 
-  int iDIR_IsDir(char *szDir) {
-    HANDLE hArquivo;
-    WIN32_FIND_DATA wfdArquivo;
+int iDIR_IsDir(char *szDir) {
+  HANDLE hArquivo;
+  WIN32_FIND_DATA wfdArquivo;
 
-    hArquivo = FindFirstFile(szDir, &wfdArquivo);
-    if (hArquivo == INVALID_HANDLE_VALUE)
-      return -1;
+  hArquivo = FindFirstFile(szDir, &wfdArquivo);
+  if (hArquivo == INVALID_HANDLE_VALUE)
+    return -1;
 
-    FindClose(hArquivo);
-    if (wfdArquivo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-      return 1; /* fir */
+  FindClose(hArquivo);
+  if (wfdArquivo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+    return 1; /* fir */
 
-    return 0;   /* file */
-  }
+  return 0; /* file */
+}
 #else /** LINUX */
 /*
  * Is directory: 1
@@ -104,10 +101,10 @@ int iDIR_IsDir(char *szDir) {
   if (stat(szDir, &stStat) != 0)
     return -1;
   if (S_ISDIR(stStat.st_mode))
-    return  1;
+    return 1;
   if (S_ISREG(stStat.st_mode))
-    return  0;  /* arquivo regular */
-  
+    return 0; /* arquivo regular */
+
   return 0;
 }
 int iDIR_SplitFilename(char *szFilename, char *szPath, char *szName,
@@ -214,9 +211,10 @@ int bStrIsEmpty(const char *kpszStr) {
   return FALSE;
 } /* bStrIsEmpty */
 
-int bStrIsNumeric(const char *kpszString)
-{
-  if (bStrIsEmpty(kpszString) == TRUE) return FALSE;
-  for ( ; *kpszString >= '0' && *kpszString <= '9'; kpszString++);
+int bStrIsNumeric(const char *kpszString) {
+  if (bStrIsEmpty(kpszString) == TRUE)
+    return FALSE;
+  for (; *kpszString >= '0' && *kpszString <= '9'; kpszString++)
+    ;
   return (*kpszString == 0);
 }

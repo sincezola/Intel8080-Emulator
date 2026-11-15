@@ -12,6 +12,7 @@ endif
 
 SRC_PATH      = src
 INCLUDE_PATH  = include
+LOG_DIR       = log
 OBJ_DIR       = obj
 BIN_DIR       = bin
 INC_DIR       = -I. -I$(INCLUDE_PATH)
